@@ -1,27 +1,4 @@
-const students = [
-    {
-        "name": "Raj",
-        "id": 1,
-        "course": "B.tech",
-        "sem": "II",
-        "marks": {
-            "english": 81,
-            "maths": 85,
-            "science": 24,
-        },
-    },
-    {
-        "name": "Rohit",
-        "id": 2,
-        "course": "B.tech",
-        "sem": "II",
-        "marks": {
-            "english": 86,
-            "maths": 65,
-            "science": 74,
-        },
-    },
-];
+const students = [];
 
 function getStudents() {
     const student = {
@@ -46,25 +23,55 @@ function getStudents() {
     createStudentRow();
 }
 
-function createStudentRow() {
-    let student = students[0];
-    document.getElementById("studentData").innerHTML =
-        "<tr>" +
-        `<td>${student.id}</td>` +
-        `<td>${student.name}</td>` +
-        `<td>${student.course}</td>` +
-        `<td>${student.sem}</td>` +
-        `<td ${student.marks.maths < 33 ? "class= 'text-danger'" : ""}>${
-            student.marks.maths
-        }</td>` +
-        `<td ${student.marks.english < 33 ? "class= 'text-danger'" : ""}>${
-            student.marks.english
-        }</td>` +
-        `<td ${student.marks.science < 33 ? "class= 'text-danger'" : ""}>${
-            student.marks.science
-        }</td>` +
-        `<td>${student.percent}%</td>` +
-        "</tr>";
+function createStudentRow(studentFilter = students) {
+    let tableData = studentFilter.map(
+        (student) =>
+            "<tr>" +
+            `<td>${student.id}</td>` +
+            `<td>${student.name}</td>` +
+            `<td>${student.course}</td>` +
+            `<td>${student.sem}</td>` +
+            `<td ${student.marks.maths < 33 ? "class= 'text-danger'" : ""}>${
+                student.marks.maths
+            }</td>` +
+            `<td ${student.marks.english < 33 ? "class= 'text-danger'" : ""}>${
+                student.marks.english
+            }</td>` +
+            `<td ${student.marks.science < 33 ? "class= 'text-danger'" : ""}>${
+                student.marks.science
+            }</td>` +
+            `<td>${student.percent}%</td>` +
+            "</tr>"
+    );
+    document.getElementById("studentData").innerHTML = tableData.join("");
 }
 
-createStudentRow();
+function filterStudents(dropdown) {
+    const selectedOption = dropdown.selectedIndex;
+    const selectedValue = dropdown.options[selectedOption].value;
+    switch (selectedValue) {
+        case "all":
+            createStudentRow(students);
+            break;
+        case "pass":
+            const pass = students.filter(
+                (student) =>
+                    student.marks.maths > 32 &&
+                    student.marks.english > 32 &&
+                    student.marks.science > 32
+            );
+            createStudentRow(pass);
+            break;
+        case "fail":
+            const fail = students.filter(
+                (student) =>
+                    student.marks.maths <= 32 ||
+                    student.marks.english <= 32 ||
+                    student.marks.science <= 32
+            );
+            createStudentRow(fail);
+            break;
+        default:
+            console.log("Invalid filter!");
+    }
+}
